@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class City extends Model
 {
@@ -15,5 +16,10 @@ class City extends Model
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class, 'two_letters_code', 'country_code');
+    }
+
+    public function open_weather_data(): HasMany
+    {
+        return $this->hasMany(OpenWeatherData::class, 'city_id', 'open_weather_city_id');
     }
 }
