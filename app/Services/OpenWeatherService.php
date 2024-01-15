@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Helpers\CityHelper;
+use App\Models\OpenWeatherData;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -16,11 +18,16 @@ class OpenWeatherService
         $this->api_key = env('OPEN_WEATHER_API_KEY');
     }
 
+    public function receiveAndSaveData()
+    {
+        $cities = CityHelper::getAllCodes();
+        $currentWeather = $this->getCurrentWeatherData($cities);
+    }
+
     public function getCurrentWeatherData(string $cities)
     {
         try {
-//            $answer = Http::get(env('OPEN_WEATHER_URL_WITH_VERSION') . '/group?id=' . $cities . '&units=metric&appid=' . env('OPEN_WEATHER_API_KEY'));
-            $answer = Http::get(env('OPEN_WEATHER_URL_WITH_VERSION') . '/group?id=524901&units=metric&appid=' . env('OPEN_WEATHER_API_KEY'));
+            $answer = Http::get(env('OPEN_WEATHER_URL_WITH_VERSION') . '/group?id=' . $cities . '&units=metric&appid=' . env('OPEN_WEATHER_API_KEY'));
             return self::httpAnswerToArray($answer);
         } catch (Exception $exception) {
             Log::error($exception);

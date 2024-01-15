@@ -15,6 +15,6 @@ class GetWeatherController extends BaseController
 
     public function __invoke()
     {
-        return (new OpenWeatherService())->getCurrentWeatherData('Moscow');
+        return (new OpenWeatherService())->receiveAndSaveData();
     }
 }
