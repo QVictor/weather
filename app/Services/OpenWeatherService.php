@@ -23,6 +23,7 @@ class OpenWeatherService
     {
         $cities = CityHelper::getAllCodes();
         $currentWeather = $this->getCurrentWeatherData($cities);
+        OpenWeatherData::insert($this->prepareDataFromInsert($currentWeather));
     }
 
     public function getCurrentWeatherData(string $cities)
