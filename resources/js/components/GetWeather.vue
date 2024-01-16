@@ -6,14 +6,15 @@ export default {
     data: function () {
         return {
             companies: [],
+            cities: [],
             count: 0
         }
     },
     mounted() {
         var app = this;
-        axios.get('/api/getWeather')
+        axios.get('/api/cities')
             .then(function (resp) {
-                app.companies = resp.data;
+                app.cities = resp.data;
                 console.log(resp.data);
             })
             .catch(function (resp) {
