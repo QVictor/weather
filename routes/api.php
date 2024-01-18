@@ -21,3 +21,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/getWeather', App\Http\Controllers\GetWeatherController::class);
 Route::get('/cities', App\Http\Controllers\CitiesController::class);
 
+Route::get('/statistic/get-statistics/{cityId}', App\Http\Controllers\Statistics\GetStatisticsController::class);
