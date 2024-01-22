@@ -6,7 +6,7 @@
 <body>
 <div id="app">
     <div id="app">
-        <get_weather/>
+        <bar_chart/>
     </div>
 </div>
 </body>
