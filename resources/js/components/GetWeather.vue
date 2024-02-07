@@ -1,23 +1,58 @@
 <script>
-import {ref} from 'vue'
 import axios from 'axios';
+import BarChart from './BarChart.vue';
+
 
 export default {
+    components: {
+        'bar-chart': BarChart
+    },
     data: function () {
         return {
             selectedCityId: '',
             cities: [],
             statisticByCity: [],
-            count: 0
+            average: [],
+            count: 0,
+
+            isChartsDisplay: false,
+            charts: [],
         }
     },
     methods: {
         getWeather (selectedCity) {
-            console.log(selectedCity);
             axios.get('api/statistic/get-statistics/' + selectedCity).then((response) => {
-                console.log(response.data);
                 this.statisticByCity = response.data;
             });
+            axios.get('api/statistic/get-statistics/' + selectedCity + '/average').then((response) => {
+                let self = this;
+                console.log(response.data)
+
+                self.charts = [];
+                let labels = [];
+                let dataAvgTemp = [];
+                let dataAvgWindSpeed = [];
+                let dataAvgHumidity = [];
+                response.data.data.forEach(function (value, key) {
+                    labels.push(value.date);
+                    dataAvgTemp.push(value.avg_temp);
+                    dataAvgWindSpeed.push(value.avg_wind_speed);
+                    dataAvgHumidity.push(value.avg_humidity);
+                });
+                this.charts.push(this.getChartData('Средняя температура', labels, dataAvgTemp));
+                this.charts.push(this.getChartData('Средняя скорость ветра', labels, dataAvgWindSpeed));
+                this.charts.push(this.getChartData('Средняя влажность', labels, dataAvgHumidity));
+                this.isChartsDisplay = true;
+            });
+        },
+        getChartData(label, labels, data) {
+            return {
+                labels: labels,
+                datasets: [{
+                    label: label,
+                    data: data
+                }]
+            }
         }
     },
     beforeCreate () {
@@ -25,10 +60,8 @@ export default {
         axios.get('/api/cities')
             .then(function (resp) {
                 app.cities = resp.data.data;
-                console.log(resp.data);
             })
             .catch(function (resp) {
-                console.log(resp);
             });
     }
 }
@@ -42,5 +75,10 @@ export default {
         </option>
     </select>
     <span>Выбрано: {{ selectedCityId }}</span>
-    <p>{{ statisticByCity }}</p>
+    <div style="overflow: hidden;">
+        <bar-chart
+            v-for="chart in this.charts"
+            v-bind:chartData=chart
+        ></bar-chart>
+    </div>
 </template>

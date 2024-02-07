@@ -5,9 +5,7 @@
 </head>
 <body>
 <div id="app">
-    <div id="app">
-        <bar_chart/>
-    </div>
+    <get-weather/>
 </div>
 </body>
 </html>
