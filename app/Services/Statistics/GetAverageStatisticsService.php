@@ -6,8 +6,8 @@ use App\Repositories\OpenWeatherDataRepository;
 
 class GetAverageStatisticsService
 {
-    public function get($cityId)
+    public function get($cityId, $groupBy)
     {
-        return (new OpenWeatherDataRepository())->getAverageStatistic($cityId);
+        return (new OpenWeatherDataRepository())->getAverageStatistic($cityId, $groupBy);
     }
 }

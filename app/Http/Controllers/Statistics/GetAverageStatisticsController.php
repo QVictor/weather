@@ -15,6 +15,6 @@ class GetAverageStatisticsController extends BaseController
 
     public function __invoke(GetStatisticsRequest $getStatisticsRequest)
     {
-        return GetAverageResource::collection((new GetAverageStatisticsService())->get($getStatisticsRequest->city_id));
+        return GetAverageResource::collection((new GetAverageStatisticsService())->get($getStatisticsRequest->city_id, $getStatisticsRequest->group_by));
     }
 }

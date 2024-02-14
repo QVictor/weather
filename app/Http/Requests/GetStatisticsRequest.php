@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\OpenWeatherData;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -31,6 +32,7 @@ class GetStatisticsRequest extends FormRequest
     {
         return [
             'city_id' => 'required|exists:cities,open_weather_city_id',
+            'group_by' => 'nullable|in:' . implode(',',OpenWeatherData::STATISTIC_GROUP_BY_NAMES)
         ];
     }
 }

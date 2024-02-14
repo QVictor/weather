@@ -16,4 +16,14 @@ class OpenWeatherData extends Model
     {
         return $this->belongsTo(City::class, 'city_id', 'open_weather_city_id');
     }
+
+    const STATISTIC_GROUP_BY_NAMES = [
+        self::STATISTIC_GROUP_BY_DAILY,
+        self::STATISTIC_GROUP_BY_MONTHLY,
+        self::STATISTIC_GROUP_BY_YEARLY
+    ];
+
+    const STATISTIC_GROUP_BY_DAILY = 'day';
+    const STATISTIC_GROUP_BY_MONTHLY = 'month';
+    const STATISTIC_GROUP_BY_YEARLY = 'year';
 }
