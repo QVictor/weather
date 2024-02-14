@@ -60,6 +60,8 @@ export default {
         axios.get('/api/cities')
             .then(function (resp) {
                 app.cities = resp.data.data;
+                app.selectedCityId = app.cities[0].open_weather_city_id
+                app.getWeather(app.selectedCityId)
             })
             .catch(function (resp) {
             });
