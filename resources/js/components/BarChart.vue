@@ -1,5 +1,5 @@
 <template>
-    <div style="position: relative; height:80vh; width:160vw">
+    <div class="graphic">
         <Bar :data="chartData" :options="chartOptions"/>
     </div>
 </template>
@@ -29,3 +29,11 @@ export default {
     }
 }
 </script>
+
+<style>
+.graphic {
+    position: relative;
+    height:500px;
+    width:500px;
+}
+</style>

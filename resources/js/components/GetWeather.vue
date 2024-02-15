@@ -26,8 +26,10 @@ export default {
         }
     },
     methods: {
-        getWeather (selectedCity) {
-            axios.get('api/statistic/get-statistics/' + selectedCity).then((response) => {
+        getWeather () {
+            let self = this;
+
+            axios.get('api/statistic/get-statistics/' + self.selectedCityId).then((response) => {
                 this.statisticByCity = response.data;
             });
             axios.get('api/statistic/get-statistics/' + self.selectedCityId + '/average' + '?groupBy=' + self.selectedGroupBy).then((response) => {
@@ -39,7 +41,7 @@ export default {
                 let dataAvgTemp = [];
                 let dataAvgWindSpeed = [];
                 let dataAvgHumidity = [];
-                response.data.data.forEach(function (value, key) {
+                response.data.data.forEach(function (value) {
                     labels.push(value.date);
                     dataAvgTemp.push(value.avg_temp);
                     dataAvgWindSpeed.push(value.avg_wind_speed);
@@ -51,7 +53,7 @@ export default {
                 this.isChartsDisplay = true;
             });
         },
-        getChartData(label, labels, data) {
+        getChartData (label, labels, data) {
             return {
                 labels: labels,
                 datasets: [{
@@ -67,7 +69,7 @@ export default {
             .then(function (resp) {
                 app.cities = resp.data.data;
                 app.selectedCityId = app.cities[0].open_weather_city_id
-                app.getWeather(app.selectedCityId)
+                app.getWeather()
             })
             .catch(function (resp) {
             });
@@ -76,8 +78,10 @@ export default {
 </script>
 
 <template>
-    <select v-model="selectedCityId" @change="getWeather(selectedCityId)">
-        <option disabled value="">Выберите один из вариантов</option>
+    <h3>Выводим средние значения</h3>
+
+    <div>Выберите город</div>
+    <select v-model="selectedCityId" @change="getWeather()">
         <option v-for="city in cities" v-bind:value="city.open_weather_city_id">
             {{ city.name }}
         </option>
@@ -89,7 +93,7 @@ export default {
             {{ groupBy.value }}
         </option>
     </select>
-    
+
     <div class="graphics">
         <bar-chart
             v-for="chart in this.charts"
@@ -97,3 +101,11 @@ export default {
         ></bar-chart>
     </div>
 </template>
+
+<style>
+    .graphics {
+        overflow: hidden;
+        display: flex;
+        justify-content: space-between;
+    }
+</style>
