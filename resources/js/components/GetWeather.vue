@@ -10,6 +10,12 @@ export default {
     data: function () {
         return {
             selectedCityId: '',
+            groupByList: [
+                {key: 'day', value: 'По дням'},
+                {key: 'month', value: 'По месяцам'},
+                {key: 'year', value: 'По годам'},
+            ],
+            selectedGroupBy: 'day',
             cities: [],
             statisticByCity: [],
             average: [],
@@ -24,8 +30,8 @@ export default {
             axios.get('api/statistic/get-statistics/' + selectedCity).then((response) => {
                 this.statisticByCity = response.data;
             });
-            axios.get('api/statistic/get-statistics/' + selectedCity + '/average').then((response) => {
-                let self = this;
+            axios.get('api/statistic/get-statistics/' + self.selectedCityId + '/average' + '?groupBy=' + self.selectedGroupBy).then((response) => {
+
                 console.log(response.data)
 
                 self.charts = [];
@@ -76,8 +82,15 @@ export default {
             {{ city.name }}
         </option>
     </select>
-    <span>Выбрано: {{ selectedCityId }}</span>
-    <div style="overflow: hidden;">
+
+    <div>Выберите группировку</div>
+    <select v-model="selectedGroupBy" @change="getWeather()">
+        <option v-for="groupBy in groupByList" v-bind:value="groupBy.key">
+            {{ groupBy.value }}
+        </option>
+    </select>
+    
+    <div class="graphics">
         <bar-chart
             v-for="chart in this.charts"
             v-bind:chartData=chart
