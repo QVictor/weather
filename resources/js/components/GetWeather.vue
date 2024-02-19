@@ -32,7 +32,7 @@ export default {
             axios.get('api/statistic/get-statistics/' + self.selectedCityId).then((response) => {
                 this.statisticByCity = response.data;
             });
-            axios.get('api/statistic/get-statistics/' + self.selectedCityId + '/average' + '?groupBy=' + self.selectedGroupBy).then((response) => {
+            axios.get('api/statistic/get-statistics/' + self.selectedCityId + '/average' + '?group_by=' + self.selectedGroupBy).then((response) => {
 
                 console.log(response.data)
 

@@ -42,7 +42,7 @@ class OpenWeatherDataRepository extends BaseRepository
                 $query = $query->addSelect(DB::raw('YEAR(created_at) as date'));
                 break;
             default : {
-                $query = $query->addSelect(DB::raw('created_at as date'));
+                $query = $query->addSelect(DB::raw('DATE(created_at) as date'));
             }
         }
          return $query->groupBy('date')
