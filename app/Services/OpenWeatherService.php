@@ -36,6 +36,16 @@ class OpenWeatherService
         }
     }
 
+    public function geocodingApi(string $city, string $country)
+    {
+        try {
+            $answer = Http::get('http://api.openweathermap.org/geo/1.0/direct?q='.$city.','.$country.'&limit=5&appid=' . env('OPEN_WEATHER_API_KEY'));
+            return self::httpAnswerToArray($answer);
+        } catch (Exception $exception) {
+            Log::error($exception);
+        }
+    }
+
     public static function httpAnswerToArray(Response $answer): array
     {
         $jsonString = $answer->getBody()->getContents();
