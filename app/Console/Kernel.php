@@ -17,8 +17,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->call(function () {
-            Log::debug('get api open weather and save in database');
             (new OpenWeatherService())->receiveAndSaveData();
+        })->hourly();
+
+        $schedule->call(function () {
+            (new OpenWeatherService())->receiveAndSaveAirPollutionData();
         })->hourly();
     }
 

@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Helpers\CityHelper;
+use App\Models\AirPollution;
+use App\Models\City;
 use App\Models\OpenWeatherData;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Carbon;
@@ -24,6 +26,17 @@ class OpenWeatherService
         $cities = CityHelper::getAllCodes();
         $currentWeather = $this->getCurrentWeatherData($cities);
         OpenWeatherData::insert($this->prepareDataFromInsert($currentWeather));
+    }
+
+    public function receiveAndSaveAirPollutionData()
+    {
+        $cities = City::all();
+        $needleInsert = [];
+        foreach ($cities as $city) {
+            $airPollution = $this->airPollutionApi($city->latitude, $city->longitude);
+            $needleInsert[] = $this->prepareDataFromInsertAirPollution($city->open_weather_city_id, $airPollution);
+        }
+        AirPollution::insert($needleInsert);
     }
 
     public function getCurrentWeatherData(string $cities)
@@ -52,6 +65,16 @@ class OpenWeatherService
         return json_decode($jsonString, true);
     }
 
+    public function airPollutionApi($latitude, $longitude)
+    {
+        try {
+            $answer = Http::get('http://api.openweathermap.org/data/2.5/air_pollution?lat='.$latitude.'1&lon='.$longitude.'&appid=' . env('OPEN_WEATHER_API_KEY'));
+            return self::httpAnswerToArray($answer);
+        } catch (Exception $exception) {
+            Log::error($exception);
+        }
+    }
+
     private function prepareDataFromInsert($apiAnswer): array
     {
         $res = [];
@@ -70,5 +93,26 @@ class OpenWeatherService
             ];
         }
         return $res;
+    }
+
+    private function prepareDataFromInsertAirPollution($cityId, $apiAnswer): array
+    {
+        $components = $apiAnswer['list'][0]['components'];
+        $now = Carbon::now();
+        return [
+            'city_id' => $cityId,
+            'air_quality_index' => $apiAnswer['list'][0]['main']['aqi'],
+            'co' => $components['co'],
+            'no' => $components['no'],
+            'no2' => $components['no2'],
+            'o3' => $components['o3'],
+            'so2' => $components['so2'],
+            'pm2_5' => $components['pm2_5'],
+            'pm10' => $components['pm10'],
+            'nh3' => $components['nh3'],
+            'datetime' => Carbon::parse($apiAnswer['list'][0]['dt']),
+            'created_at' => $now,
+            'updated_at' => $now,
+        ];
     }
 }
