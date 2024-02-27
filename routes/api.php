@@ -24,5 +24,6 @@ Route::get('/cities', App\Http\Controllers\CitiesController::class);
 Route::prefix('/statistic/get-statistics')->group(function () {
     Route::get('{cityId}', App\Http\Controllers\Statistics\GetStatisticsController::class);
     Route::get('{cityId}/average', App\Http\Controllers\Statistics\GetAverageStatisticsController::class);
+    Route::get('{cityId}/air-pollution', App\Http\Controllers\Statistics\GetAirPollutionStatisticsController::class);
 });
 

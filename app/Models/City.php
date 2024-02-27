@@ -13,9 +13,19 @@ class City extends Model
 
     protected $table = 'cities';
 
+    public $timestamps = false;
+
+    protected $fillable = [
+        'name',
+        'country_code',
+        'open_weather_city_id',
+        'latitude',
+        'longitude'
+    ];
+
     public function country(): BelongsTo
     {
-        return $this->belongsTo(Country::class, 'two_letters_code', 'country_code');
+        return $this->belongsTo(Country::class, 'country_code', 'two_letters_code');
     }
 
     public function open_weather_data(): HasMany
