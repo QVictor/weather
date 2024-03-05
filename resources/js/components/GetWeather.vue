@@ -1,11 +1,13 @@
 <script>
 import axios from 'axios';
 import BarChart from './BarChart.vue';
+import GetAirPollution from "./GetAirPollution.vue";
 
 
 export default {
     components: {
-        'bar-chart': BarChart
+        'bar-chart': BarChart,
+        'get-air-pollution': GetAirPollution
     },
     data: function () {
         return {
@@ -93,6 +95,11 @@ export default {
             {{ groupBy.value }}
         </option>
     </select>
+
+    <get-air-pollution
+        :selectedCityId = this.selectedCityId
+        :selectedGroupBy = this.selectedGroupBy
+    ></get-air-pollution>
 
     <div class="graphics">
         <bar-chart
