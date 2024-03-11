@@ -1,13 +1,12 @@
 <script>
 import axios from 'axios';
-import BarChart from './BarChart.vue';
 import GetAirPollution from "./GetAirPollution.vue";
-
+import GetAverageWeather from "./GetAverageWeather.vue";
 
 export default {
     components: {
-        'bar-chart': BarChart,
-        'get-air-pollution': GetAirPollution
+        'get-air-pollution': GetAirPollution,
+        'get-average-weather': GetAverageWeather
     },
     data: function () {
         return {
@@ -19,50 +18,6 @@ export default {
             ],
             selectedGroupBy: 'day',
             cities: [],
-            statisticByCity: [],
-            average: [],
-            count: 0,
-
-            isChartsDisplay: false,
-            charts: [],
-        }
-    },
-    methods: {
-        getWeather () {
-            let self = this;
-
-            axios.get('api/statistic/get-statistics/' + self.selectedCityId).then((response) => {
-                this.statisticByCity = response.data;
-            });
-            axios.get('api/statistic/get-statistics/' + self.selectedCityId + '/average' + '?group_by=' + self.selectedGroupBy).then((response) => {
-
-                console.log(response.data)
-
-                self.charts = [];
-                let labels = [];
-                let dataAvgTemp = [];
-                let dataAvgWindSpeed = [];
-                let dataAvgHumidity = [];
-                response.data.data.forEach(function (value) {
-                    labels.push(value.date);
-                    dataAvgTemp.push(value.avg_temp);
-                    dataAvgWindSpeed.push(value.avg_wind_speed);
-                    dataAvgHumidity.push(value.avg_humidity);
-                });
-                this.charts.push(this.getChartData('Средняя температура', labels, dataAvgTemp));
-                this.charts.push(this.getChartData('Средняя скорость ветра', labels, dataAvgWindSpeed));
-                this.charts.push(this.getChartData('Средняя влажность', labels, dataAvgHumidity));
-                this.isChartsDisplay = true;
-            });
-        },
-        getChartData (label, labels, data) {
-            return {
-                labels: labels,
-                datasets: [{
-                    label: label,
-                    data: data
-                }]
-            }
         }
     },
     beforeCreate () {
@@ -71,7 +26,6 @@ export default {
             .then(function (resp) {
                 app.cities = resp.data.data;
                 app.selectedCityId = app.cities[0].open_weather_city_id
-                app.getWeather()
             })
             .catch(function (resp) {
             });
@@ -83,14 +37,14 @@ export default {
     <h3>Выводим средние значения</h3>
 
     <div>Выберите город</div>
-    <select v-model="selectedCityId" @change="getWeather()">
+    <select v-model="selectedCityId">
         <option v-for="city in cities" v-bind:value="city.open_weather_city_id">
             {{ city.name }}
         </option>
     </select>
 
     <div>Выберите группировку</div>
-    <select v-model="selectedGroupBy" @change="getWeather()">
+    <select v-model="selectedGroupBy">
         <option v-for="groupBy in groupByList" v-bind:value="groupBy.key">
             {{ groupBy.value }}
         </option>
@@ -101,18 +55,9 @@ export default {
         :selectedGroupBy = this.selectedGroupBy
     ></get-air-pollution>
 
-    <div class="graphics">
-        <bar-chart
-            v-for="chart in this.charts"
-            v-bind:chartData=chart
-        ></bar-chart>
-    </div>
+    <get-average-weather
+        :selectedCityId = this.selectedCityId
+        :selectedGroupBy = this.selectedGroupBy
+    ></get-average-weather>
 </template>
 
-<style>
-    .graphics {
-        overflow: hidden;
-        display: flex;
-        justify-content: space-between;
-    }
-</style>

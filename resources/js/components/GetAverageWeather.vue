@@ -30,14 +30,21 @@ export default {
     methods: {
         getAirPollution () {
             let self = this;
-            axios.get('api/statistic/get-statistics/' + self.selectedCityId + '/air-pollution' + '?group_by=' + self.selectedGroupBy).then((response) => {
+            axios.get('api/statistic/get-statistics/' + self.selectedCityId + '/average' + '?group_by=' + self.selectedGroupBy).then((response) => {
+                self.charts = [];
                 let labels = [];
-                let dataAvgAirPollution = [];
+                let dataAvgTemp = [];
+                let dataAvgWindSpeed = [];
+                let dataAvgHumidity = [];
                 response.data.data.forEach(function (value) {
-                    labels.push(value.avg_date);
-                    dataAvgAirPollution.push(value.avg_air_quality_index);
+                    labels.push(value.date);
+                    dataAvgTemp.push(value.avg_temp);
+                    dataAvgWindSpeed.push(value.avg_wind_speed);
+                    dataAvgHumidity.push(value.avg_humidity);
                 });
-                self.chartData = this.getChartData('Качество воздуха', labels, dataAvgAirPollution);
+                this.charts.push(this.getChartData('Средняя температура', labels, dataAvgTemp));
+                this.charts.push(this.getChartData('Средняя скорость ветра', labels, dataAvgWindSpeed));
+                this.charts.push(this.getChartData('Средняя влажность', labels, dataAvgHumidity));
                 this.isChartsDisplay = true;
             });
         },
@@ -46,7 +53,6 @@ export default {
                 labels: labels,
                 datasets: [{
                     label: label,
-                    backgroundColor: '#f87979',
                     data: data
                 }]
             }
@@ -59,17 +65,19 @@ export default {
 </script>
 
 <template>
-    <h2>Качество воздуха</h2>
-    <div class="line-chart">
-        <line-chart v-if="this.isChartsDisplay"
-                    :chartData=this.chartData>
-        </line-chart>
+    <h2>Средние значения</h2>
+    <div class="graphics">
+        <bar-chart
+            v-for="chart in this.charts"
+            v-bind:chartData=chart
+        ></bar-chart>
     </div>
 </template>
 
 <style>
-.line-chart {
-    position: relative;
-    width: 500px;
+.graphics {
+    overflow: hidden;
+    display: flex;
+    justify-content: space-between;
 }
 </style>

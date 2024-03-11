@@ -33,7 +33,6 @@ export default {
 <style>
 .graphic {
     position: relative;
-    height:500px;
     width:500px;
 }
 </style>
