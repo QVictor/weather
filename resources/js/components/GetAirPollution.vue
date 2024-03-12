@@ -33,23 +33,43 @@ export default {
             axios.get('api/statistic/get-statistics/' + self.selectedCityId + '/air-pollution' + '?group_by=' + self.selectedGroupBy).then((response) => {
                 let labels = [];
                 let dataAvgAirPollution = [];
+                let dataAvgCO = [];
+                let dataAvgNO2 = [];
+                let dataAvgPM2_5 = [];
+                let dataAvgSO2 = [];
                 response.data.data.forEach(function (value) {
                     labels.push(value.avg_date);
                     dataAvgAirPollution.push(value.avg_air_quality_index);
+                    dataAvgCO.push(value.avg_co);
+                    dataAvgNO2.push(value.avg_no2);
+                    dataAvgPM2_5.push(value.avg_pm2_5);
+                    dataAvgSO2.push(value.avg_so2);
                 });
-                self.chartData = this.getChartData('Качество воздуха', labels, dataAvgAirPollution);
+                console.log(response.data.data);
+                let datasets = [];
+                datasets.push(self.getDatasets('Оксид углерода (CO)', self.getRandomColor(), dataAvgCO));
+                datasets.push(self.getDatasets('Оксид азота (NO2)', self.getRandomColor(), dataAvgNO2));
+                datasets.push(self.getDatasets('Мелкодисперсные частицы (PM2.5)', self.getRandomColor(), dataAvgPM2_5));
+                datasets.push(self.getDatasets('Оксид серы (SO2)', self.getRandomColor(), dataAvgSO2));
+                self.chartData = this.getChartData(labels, datasets);
                 this.isChartsDisplay = true;
             });
         },
-        getChartData (label, labels, data) {
+        getChartData (labels, datasets) {
             return {
                 labels: labels,
-                datasets: [{
-                    label: label,
-                    backgroundColor: '#f87979',
-                    data: data
-                }]
+                datasets: datasets
             }
+        },
+        getDatasets(label, color, data) {
+            return {
+                label: label,
+                backgroundColor: color,
+                data: data
+            }
+        },
+        getRandomColor () {
+            return '#' + Math.floor(Math.random()*16777215).toString(16);
         }
     },
     created () {
