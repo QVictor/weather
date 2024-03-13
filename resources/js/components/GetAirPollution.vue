@@ -9,7 +9,31 @@ export default {
             isChartsDisplay: false,
             'charts': [],
             chartData: {},
-            chartAirPollutionData: {}
+            chartAirPollutionData: {},
+            optionChart: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        font: {
+                            size: 18
+                        },
+                        text: 'Количество загрязняющих веществ'
+                    }
+                }
+            },
+            optionAirPollutionChart: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        font: {
+                            size: 18
+                        },
+                        text: 'Общее качество воздуха'
+                    }
+                }
+            },
         }
     },
     props: [
@@ -84,9 +108,11 @@ export default {
     <h2>Качество воздуха</h2>
     <div class="line-chart">
         <line-chart v-if="this.isChartsDisplay"
-                    :chartData=this.chartAirPollutionData>
+                    :chartData=this.chartAirPollutionData
+                    :chartOptions=this.optionAirPollutionChart>
         </line-chart>
         <line-chart v-if="this.isChartsDisplay"
+                    :chartOptions=this.optionChart
                     :chartData=this.chartData>
         </line-chart>
     </div>
