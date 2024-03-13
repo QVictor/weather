@@ -8,7 +8,8 @@ export default {
         return {
             isChartsDisplay: false,
             'charts': [],
-            chartData: {}
+            chartData: {},
+            chartAirPollutionData: {}
         }
     },
     props: [
@@ -51,6 +52,7 @@ export default {
                 datasets.push(self.getDatasets('Оксид азота (NO2)', self.getRandomColor(), dataAvgNO2));
                 datasets.push(self.getDatasets('Мелкодисперсные частицы (PM2.5)', self.getRandomColor(), dataAvgPM2_5));
                 datasets.push(self.getDatasets('Оксид серы (SO2)', self.getRandomColor(), dataAvgSO2));
+                self.chartAirPollutionData = this.getChartData(labels, [self.getDatasets('Качество воздуха', self.getRandomColor(), dataAvgAirPollution)]);
                 self.chartData = this.getChartData(labels, datasets);
                 this.isChartsDisplay = true;
             });
@@ -81,6 +83,9 @@ export default {
 <template>
     <h2>Качество воздуха</h2>
     <div class="line-chart">
+        <line-chart v-if="this.isChartsDisplay"
+                    :chartData=this.chartAirPollutionData>
+        </line-chart>
         <line-chart v-if="this.isChartsDisplay"
                     :chartData=this.chartData>
         </line-chart>
