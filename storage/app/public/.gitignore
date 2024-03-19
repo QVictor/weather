@@ -1,2 +1,5 @@
 *
+!images/
+!images/icons/
+!images/icons/*.png
 !.gitignore
