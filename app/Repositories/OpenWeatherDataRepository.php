@@ -48,4 +48,23 @@ class OpenWeatherDataRepository extends BaseRepository
          return $query->groupBy('date')
             ->get();
     }
+
+    public function getStatisticWithIcons($cityId)
+    {
+        return $this->model
+            ->where('city_id', $cityId)
+            ->select(
+                'city_id',
+                'created_at',
+                'weather_condition_icon',
+                DB::raw('group_concat(weather_condition_icon) as icons'),
+                DB::raw('ROUND(MIN(temp), 1) as min_temp'),
+                DB::raw('ROUND(MAX(temp), 1) as max_temp'),
+                DB::raw('ROUND(AVG(wind_speed), 1) as avg_wind_speed'),
+                DB::raw('ROUND(AVG(humidity), 0) as avg_humidity'),
+            )
+            ->with('city')
+            ->groupBy(DB::raw('Date(created_at)'))
+            ->get();
+    }
 }

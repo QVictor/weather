@@ -17,6 +17,11 @@ class OpenWeatherData extends Model
         return $this->belongsTo(City::class, 'city_id', 'open_weather_city_id');
     }
 
+    public function icon(): BelongsTo
+    {
+        return $this->belongsTo(Icon::class, 'weather_condition_icon', 'name');
+    }
+
     const STATISTIC_GROUP_BY_NAMES = [
         self::STATISTIC_GROUP_BY_DAILY,
         self::STATISTIC_GROUP_BY_MONTHLY,
